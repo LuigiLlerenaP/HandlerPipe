@@ -52,9 +52,6 @@ jobs:
         with:
           user: LlerenaL
 
-      - name: Push to NuGet.org
+- name: Push to NuGet.org
         shell: bash
-        run: |
-          dotnet nuget push "./nupkgs/*.nupkg" \
-            --source "https://api.nuget.org/v3/index.json" \
-            --skip-duplicate
+        run: dotnet nuget push "./nupkgs/*.nupkg" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
