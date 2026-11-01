@@ -31,13 +31,13 @@ jobs:
           echo "Package version: $VERSION"
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore HandlerPipe.sln
 
       - name: Build
-        run: dotnet build -c Release --no-restore
+        run: dotnet build HandlerPipe.sln -c Release --no-restore
 
       - name: Test
-        run: dotnet test -c Release --no-build
+        run: dotnet test HandlerPipe.sln -c Release --no-build
 
       - name: Pack
         run: >
@@ -47,8 +47,10 @@ jobs:
           --output ./nupkgs
           /p:PackageVersion=${{ env.VERSION }}
 
-      - name: List generated packages
-        run: ls -lah ./nupkgs
+      - name: NuGet login (OIDC)
+        uses: NuGet/login@v1
+        with:
+          user: LlerenaL
 
       - name: Push to NuGet.org
         shell: bash
