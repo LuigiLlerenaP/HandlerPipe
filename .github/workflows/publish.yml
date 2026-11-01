@@ -31,13 +31,13 @@ jobs:
           echo "Package version: $VERSION"
 
       - name: Restore
-        run: dotnet restore HandlerPipe.sln
+        run: dotnet restore
 
       - name: Build
-        run: dotnet build HandlerPipe.sln -c Release --no-restore
+        run: dotnet build -c Release --no-restore
 
       - name: Test
-        run: dotnet test HandlerPipe.sln -c Release --no-build
+        run: dotnet test -c Release --no-build
 
       - name: Pack
         run: >
