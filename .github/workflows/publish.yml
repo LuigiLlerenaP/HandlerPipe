@@ -12,9 +12,7 @@ jobs:
 
     permissions:
       contents: read
-
-    env:
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      id-token: write # Obligatorio para Trusted Publishing
 
     steps:
       - name: Checkout
@@ -33,13 +31,13 @@ jobs:
           echo "Package version: $VERSION"
 
       - name: Restore
-        run: dotnet restore HandlerPipe.slnx
+        run: dotnet restore HandlerPipe.sln
 
       - name: Build
-        run: dotnet build HandlerPipe.slnx -c Release --no-restore
+        run: dotnet build HandlerPipe.sln -c Release --no-restore
 
       - name: Test
-        run: dotnet test HandlerPipe.slnx -c Release --no-build
+        run: dotnet test HandlerPipe.sln -c Release --no-build
 
       - name: Pack
         run: >
@@ -49,16 +47,6 @@ jobs:
           --output ./nupkgs
           /p:PackageVersion=${{ env.VERSION }}
 
-      - name: Verify NuGet API Key
-        shell: bash
-        run: |
-          if [ -z "$NUGET_API_KEY" ]; then
-            echo "ERROR: NUGET_API_KEY is empty."
-            exit 1
-          fi
-
-          echo "NUGET_API_KEY found."
-
       - name: List generated packages
         run: ls -lah ./nupkgs
 
@@ -67,5 +55,4 @@ jobs:
         run: |
           dotnet nuget push "./nupkgs/*.nupkg" \
             --source "https://api.nuget.org/v3/index.json" \
-            --api-key "$NUGET_API_KEY" \
             --skip-duplicate
