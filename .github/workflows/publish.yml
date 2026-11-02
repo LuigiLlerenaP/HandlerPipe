@@ -48,6 +48,7 @@ jobs:
           /p:PackageVersion=${{ env.VERSION }}
 
       - name: NuGet login (OIDC)
+        id: nuget_login
         uses: NuGet/login@v1
         with:
           user: LlerenaL
@@ -64,5 +65,6 @@ jobs:
         run: |
           dotnet nuget push "./nupkgs/*.nupkg" \
             --source "https://api.nuget.org/v3/index.json" \
+            --api-key "${{ steps.nuget_login.outputs.NUGET_API_KEY }}" \
             --skip-duplicate \
             --verbosity detailed
