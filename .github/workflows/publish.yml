@@ -52,6 +52,10 @@ jobs:
         with:
           user: LlerenaL
 
+      - name: Verify NuGet sources (diagnostic)
+        shell: bash
+        run: dotnet nuget list source
+
       - name: List generated packages
         run: ls -lah ./nupkgs
 
@@ -60,4 +64,5 @@ jobs:
         run: |
           dotnet nuget push "./nupkgs/*.nupkg" \
             --source "https://api.nuget.org/v3/index.json" \
-            --skip-duplicate
+            --skip-duplicate \
+            --verbosity detailed
