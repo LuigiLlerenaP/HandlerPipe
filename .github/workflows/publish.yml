@@ -12,9 +12,7 @@ jobs:
 
     permissions:
       contents: read
-
-    env:
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      id-token: write
 
     steps:
       - name: Checkout
@@ -49,15 +47,8 @@ jobs:
           --output ./nupkgs
           /p:PackageVersion=${{ env.VERSION }}
 
-      - name: Verify NuGet API Key
-        shell: bash
-        run: |
-          if [ -z "$NUGET_API_KEY" ]; then
-            echo "ERROR: NUGET_API_KEY is empty."
-            exit 1
-          fi
-
-          echo "NUGET_API_KEY found."
+      - name: NuGet login (OIDC)
+        uses: NuGet/login@v1
 
       - name: List generated packages
         run: ls -lah ./nupkgs
@@ -67,5 +58,4 @@ jobs:
         run: |
           dotnet nuget push "./nupkgs/*.nupkg" \
             --source "https://api.nuget.org/v3/index.json" \
-            --api-key "$NUGET_API_KEY" \
             --skip-duplicate
